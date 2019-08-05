@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<style> 
+
+img {
+  border-radius: 8px;
+}
+
+.button {
+  background-color: #D4AF37; /* Green */
+  border: none;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 100%;
+}
+
+.button2 {background-color: #C0C0C0;} /* Blue */
+.button3 {background-color: #cd7f32;} /* Red */ 
+
+body { font: 12px Arial;background-image: url("/Users/navdeepparmar/Documents/MCS-DS/CS-498/narativevisual/rioolympics.jpg"); 
+	height: 500px; /* You must set a specified height */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */}
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+</style>
+<body>
+<img src="/Users/navdeepparmar/Documents/MCS-DS/CS-498/narativevisual/rio2.png" alt="Paris" width="300" height="300">
+
+<a href='index.html'><button class="button button">Gold</button></a>
+<a href='silver.html'><button class="button button2">Silver</button></a>
+<a href='bronze.html'><button class="button button3">Bronze</button></a>
+
+
+
+	<script>
+
+
+        dataset = {
+            "children": [{"Name":"United States","Count":4600},
+                {"Name":"Great Britain","Count":2700},
+                {"Name":"China","Count":2600},
+                {"Name":"Russia","Count":1900},
+                {"Name":"Germany","Count":1700},
+                {"Name":"Japan","Count":1200},
+                {"Name":"France","Count":1000},
+                {"Name":"South Korea","Count":900},
+                {"Name":"Italy","Count":800},
+                {"Name":"Australia","Count":800},
+                {"Name":"Netherlands","Count":800},
+                {"Name":"Hungry","Count":800},
+                {"Name":"Brazil","Count":700},
+                {"Name":"Spain","Count":700},
+                {"Name":"Kenya","Count":600},
+                {"Name":"Jamaica","Count":600},
+                {"Name":"Crotia","Count":500},
+                {"Name":"Cuba","Count":500},
+                {"Name":"New Zealand","Count":400},
+                {"Name":"Canada","Count":400}]
+        };
+
+
+
+        var t = d3.transition()
+          .duration(750);
+        var diameter = 600;
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+        var bubble = d3.pack(dataset)
+            .size([diameter, diameter])
+            .padding(1.5);
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", diameter)
+            .attr("height", diameter)
+            .attr("transform","translate(200,10)")
+            .attr("class", "bubble");
+
+
+        var nodes = d3.hierarchy(dataset)
+            .sum(function(d,i) { return d.Count + 4000; });
+
+        var node = svg.selectAll(".node")
+            .data(bubble(nodes).descendants())
+            .enter()
+            .filter(function(d){
+                return  !d.children
+            })
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+
+        node.append("title")
+            .text(function(d) {
+                return d.Name;
+            });
+
+        node.append("circle")
+            .attr("r", function(d) {
+                return d.r;
+            })
+            .style("fill", function(d,i) {
+                return color(i);
+            });
+ 
+
+
+        node.append("text")
+            .attr("dy", ".2em")
+            .style("text-anchor", "middle")
+            .text(function(d) {
+                return d.data.Name.substring(0, d.r / 3);
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", function(d){
+                return d.r/5;
+            })
+            .attr("fill", "white");
+
+
+        d3.select(self.frameElement)
+            .style("height", diameter + "px");
+
+
+
+	</script>
+</body>
+</html>
